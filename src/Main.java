@@ -1,5 +1,5 @@
+import java.time.LocalDateTime;
 import java.util.Scanner;
-
 public class Main {
 
     private static int row;
@@ -7,12 +7,17 @@ public class Main {
     private static int[][] morningHall;
     private static int[][] afternoonHall;
     private static int[][] nightHall;
+    private static String[] bookedSeats = new String[100];
+    private static int[] studentIds = new int[100];
+    private static String[] datetimes = new String[100];
+    private static String[] hallNames = new String[3];
+    private static int bookingCount = 0;
 
     public static void main(String[] args) {
 
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
         System.out.println("CSTAD Hall Booking System");
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
 
         System.out.print("> Config total row in hall: ");
         row = new Scanner(System.in).nextInt();
@@ -33,7 +38,7 @@ public class Main {
         }
 
         do {
-            System.out.println("=".repeat(40));
+            System.out.println("=".repeat(80));
             System.out.println("[[ Application Menu ]]");
             System.out.println(" <A> Booking");
             System.out.println(" <B> Hall");
@@ -84,69 +89,110 @@ public class Main {
     // method to booking seat
     public static void bookingSeat() {
 
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
         System.out.println(" Start booking process");
         showTime();
         System.out.print(" Please select time show (A | B | C): ");
         String bookTime = new Scanner(System.in).nextLine().toUpperCase();
 
         if (bookTime.equals("A") ) {
-            System.out.println("=".repeat(40));
+            System.out.println("=".repeat(80));
             System.out.println("Hall " +bookTime);
             displayHallStatus("Morning Hall", morningHall);
-            booked(morningHall);
+            booked("Morning Hall", morningHall);
         } else if (bookTime.equals("B")) {
-            System.out.println("=".repeat(40));
+            System.out.println("=".repeat(80));
             System.out.println("Hall " +bookTime);
             displayHallStatus("Afternoon Hall", afternoonHall);
-            booked(afternoonHall);
+            booked("Afternoon Hall", afternoonHall);
         }
         else if (bookTime.equals("C")){
-            System.out.println("=".repeat(40));
+            System.out.println("=".repeat(80));
             System.out.println("Hall " +bookTime);
             displayHallStatus("Night Hall", nightHall);
-            booked(nightHall);
+            booked("Night Hall", nightHall);
         }
     }
 
     // method to display hall status
     public static void displayHallStatus(String hallName, int[][] hall) {
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
         System.out.println("Hall: " +hallName);
         for (int i = 0; i < row; i++) {
             for (int j = 0; j < col; j++) {
-                String status = (hall[i][j] == 1) ? "Available" : "Booked";
-                System.out.print((char) ('A' + i) + "-" + (j + 1) + ":: " + status + "  ");
+                String status = (hall[i][j] == 1) ? "AV" : "BO";
+                System.out.print("|" + (char)('A' + i) + "-" + (j + 1) + ":: " + status + "|   ");
             }
             System.out.println();
         }
     }
 
-    public static void booked(int[][] hall) {
-        System.out.println("=".repeat(40));
-        System.out.print("Please select number seats to book: ");
+    public static void booked(String hallName, int[][] hall) {
+        System.out.println("=".repeat(80));
+        System.out.print("> Please select number seats to book: ");
         String seatNumber = new Scanner(System.in).nextLine().toUpperCase();
-        String[] selectSeat = seatNumber.split(",");
-        for (String seat: selectSeat) {
-            String[] parts = seat.trim().split("-");
-            char rowChar = Character.toUpperCase(parts[0].charAt(0));
-            int col = Integer.parseInt(parts[1]) - 1;
+        System.out.print("> Please enter student ID: ");
+        int id = Integer.parseInt(new Scanner(System.in).nextLine());
+        System.out.print("> Are you sure to book? (Y/n): ");
+        String confirm = new Scanner(System.in).nextLine();
 
-            // convert character to index
-            int row = rowChar - 'A';
-            // Update status of seat to booked
-            hall[row][col] = 0;
+        if (confirm.equalsIgnoreCase("Y")) {
+            String[] selectSeat = seatNumber.split(",");
+            for (String seat: selectSeat) {
+                String[] parts = seat.trim().split("-");
+                char rowChar = Character.toUpperCase(parts[0].charAt(0));
+                int col = Integer.parseInt(parts[1]) - 1;
+
+                // convert character to index
+                int row = rowChar - 'A';
+                // Update status of seat to booked
+                hall[row][col] = 0;
+
+                // add book to history record detail in arrays
+                bookedSeats[bookingCount] = seat;
+                studentIds[bookingCount] = id;
+                datetimes[bookingCount] = LocalDateTime.now().toString();
+                hallNames[bookingCount] = hallName;
+                bookingCount++;
+            }
+        } else {
+            System.out.println("=".repeat(80));
+            System.out.println(" >> Your book Unsuccessfully...! ");
         }
+    }
+
+    // method to show history
+    public static void history() {
+
+        System.out.println("=".repeat(80));
+        System.out.println("Booking History");
+        System.out.println("=".repeat(80));
+
+        if (bookingCount == 0) {
+            System.out.println("No booking history available.");
+        } else {
+            System.out.printf("|%-5s|%-10s|%-15s|%-10s|%-29s|\n",
+                    "No.", "Seat", "Hall", "Student ID", "Booking Time");
+            System.out.println("|" + "=".repeat(5) + "|" + "=".repeat(10) + "|" +
+                    "=".repeat(15) + "|" + "=".repeat(10) + "|" + "=".repeat(29) + "|");
+
+            for (int i = 0; i < bookingCount; i++) {
+                System.out.printf("|%-5d|%-10s|%-15s|%-10s|%-20s|\n",
+                        (i + 1), bookedSeats[i].trim(),
+                        hallNames[i], "CSTAD-" + String.format("%03d", studentIds[i]), datetimes[i]);
+            }
+        }
+        System.out.println("=".repeat(80));
     }
 
     // method to show time information
     public static void showTime() {
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
         System.out.println("#  Show time information");
         System.out.println("#  A) Morning (10:00 - 12:30)");
         System.out.println("#  B) Afternoon (3:00 - 5:30");
         System.out.println("#  C) Night (7:00 - 9:30");
-        System.out.println("=".repeat(40));
+        System.out.println("=".repeat(80));
     }
 
     // method to reboot hall
@@ -163,10 +209,5 @@ public class Main {
                 }
             }
         System.out.println("All booked seats have been reset to available.");
-    }
-
-    // method to show history
-    public static void history() {
-
     }
 }
