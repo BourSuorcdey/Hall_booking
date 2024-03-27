@@ -171,13 +171,13 @@ public class Main {
         if (bookingCount == 0) {
             System.out.println("No booking history available.");
         } else {
-            System.out.printf("|%-5s|%-10s|%-15s|%-10s|%-29s|\n",
+            System.out.printf("|%-5s|%-10s|%-15s|%-15s|%-29s|\n",
                     "No.", "Seat", "Hall", "Student ID", "Booking Time");
             System.out.println("|" + "=".repeat(5) + "|" + "=".repeat(10) + "|" +
-                    "=".repeat(15) + "|" + "=".repeat(10) + "|" + "=".repeat(29) + "|");
+                    "=".repeat(15) + "|" + "=".repeat(15) + "|" + "=".repeat(29) + "|");
 
             for (int i = 0; i < bookingCount; i++) {
-                System.out.printf("|%-5d|%-10s|%-15s|%-10s|%-20s|\n",
+                System.out.printf("|%-5d|%-10s|%-15s|%-15s|%-29s|\n",
                         (i + 1), bookedSeats[i].trim(),
                         hallNames[i], "CSTAD-" + String.format("%03d", studentIds[i]), datetimes[i]);
             }
