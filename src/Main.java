@@ -97,19 +97,16 @@ public class Main {
 
         if (bookTime.equals("A") ) {
             System.out.println("=".repeat(80));
-            System.out.println("Hall " +bookTime);
-            displayHallStatus("Morning Hall", morningHall);
+            displayHallStatus("Hall A", morningHall);
             booked("Morning Hall", morningHall);
         } else if (bookTime.equals("B")) {
             System.out.println("=".repeat(80));
-            System.out.println("Hall " +bookTime);
-            displayHallStatus("Afternoon Hall", afternoonHall);
+            displayHallStatus("Hall B", afternoonHall);
             booked("Afternoon Hall", afternoonHall);
         }
         else if (bookTime.equals("C")){
             System.out.println("=".repeat(80));
-            System.out.println("Hall " +bookTime);
-            displayHallStatus("Night Hall", nightHall);
+            displayHallStatus("Hall C", nightHall);
             booked("Night Hall", nightHall);
         }
     }
@@ -141,11 +138,24 @@ public class Main {
             for (String seat: selectSeat) {
                 String[] parts = seat.trim().split("-");
                 char rowChar = Character.toUpperCase(parts[0].charAt(0));
-                int col = Integer.parseInt(parts[1]) - 1;
 
+                int col = Integer.parseInt(parts[1]) - 1;
                 // convert character to index
                 int row = rowChar - 'A';
+
+                // Check if the seat is within the valid range
+                if (row < 0 || row >= hall.length || col < 0 || col >= hall[0].length) {
+                    System.out.println("The seat " + seat + " does not exist in the hall.");
+                    continue;
+                }
+
                 // Update status of seat to booked
+                if (hall[row][col] == 0) {
+                    System.out.println("=".repeat(80));
+                    System.out.println("The seat " +seat + " is already booked..!");
+                    continue;
+                }
+
                 hall[row][col] = 0;
 
                 // add book to history record detail in arrays
