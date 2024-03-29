@@ -10,7 +10,7 @@ public class Main {
     private static String[] bookedSeats = new String[100];
     private static int[] studentIds = new int[100];
     private static String[] datetimes = new String[100];
-    private static String[] hallNames = new String[3];
+    private static String[] hallNames = new String[100];
     private static int bookingCount = 0;
 
     public static void main(String[] args) {
@@ -145,6 +145,7 @@ public class Main {
 
                 // Check if the seat is within the valid range
                 if (row < 0 || row >= hall.length || col < 0 || col >= hall[0].length) {
+                    System.out.println("=".repeat(80));
                     System.out.println("The seat " + seat + " does not exist in the hall.");
                     continue;
                 }
